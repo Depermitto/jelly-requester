@@ -1,0 +1,11 @@
+services:
+  jelly-requester:
+    build: .
+    container_name: jelly-requester
+    image: jelly-requester:0.1
+    volumes:
+      - ${PWD}/requests.db:/app/requests.db
+    env_file: .env
+    # environment:
+      # - TOKEN=MY-DISCORD-BOT-TOKEn
+    restart: unless-stopped
