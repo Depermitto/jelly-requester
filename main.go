@@ -9,11 +9,12 @@ import (
 )
 
 const (
-	path  = "requests.db"
+	path  = "data/requests.db"
 	token = "TOKEN"
 )
 
 func main() {
+	_ = os.Mkdir("data", 0700)
 	db, err := bolt.Open(path, 0600, nil)
 	if err != nil {
 		log.Fatalln("Cannot open database")

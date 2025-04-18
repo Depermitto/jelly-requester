@@ -4,7 +4,7 @@ services:
     container_name: jelly-requester
     image: jelly-requester:0.1
     volumes:
-      - ${PWD}/requests.db:/app/requests.db
+      - ./data:/app/data
     env_file: .env
     # environment:
       # - TOKEN=MY-DISCORD-BOT-TOKEn
