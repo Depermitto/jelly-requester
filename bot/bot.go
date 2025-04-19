@@ -108,7 +108,7 @@ func Run(token string, db *bolt.DB) {
 				return
 			}
 
-			log.Printf("Requested %v\n", link)
+			log.Printf("%s#%s requested %v\n", i.Member.User.Username, i.Member.User.ID, link)
 			err = db.Update(func(tx *bolt.Tx) error {
 				b := tx.Bucket([]byte("media"))
 				return b.Put([]byte(link.String()), []byte{1})

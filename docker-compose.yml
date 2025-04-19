@@ -2,7 +2,7 @@ services:
   jelly-requester:
     build: .
     container_name: jelly-requester
-    image: jelly-requester:0.1
+    image: jelly-requester:0.1.1
     volumes:
       - ./data:/app/data
     env_file: .env
