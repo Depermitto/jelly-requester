@@ -14,6 +14,8 @@ import (
 	bolt "go.etcd.io/bbolt"
 )
 
+const guildID = ""
+
 var commands = []*discordgo.ApplicationCommand{
 	{
 		Name:        "help",
@@ -43,7 +45,7 @@ var commands = []*discordgo.ApplicationCommand{
 		}}},
 	{
 		Name:        "mark-done",
-		Description: "Assert that media has been added to Jellyfin",
+		Description: "Assert that media has been added",
 		Options: []*discordgo.ApplicationCommandOption{{
 			Type:        discordgo.ApplicationCommandOptionInteger,
 			Name:        "request",
@@ -58,7 +60,6 @@ func Run(token string, db *bolt.DB) {
 		log.Fatalln("Bad token")
 	}
 
-	// Adding handlers
 	s.AddHandler(func(s *discordgo.Session, r *discordgo.Ready) {
 		log.Printf("Logged in as: %v#%v\n", s.State.User.Username, s.State.User.Discriminator)
 	})
@@ -181,19 +182,31 @@ func Run(token string, db *bolt.DB) {
 	if err != nil {
 		log.Fatalf("Cannot open session: %v\n", err)
 	}
+	defer s.Close()
 
-	// Adding commandsf
 	for _, command := range commands {
-		_, err = s.ApplicationCommandCreate(s.State.User.ID, "", command)
+		_, err = s.ApplicationCommandCreate(s.State.User.ID, guildID, command)
 		if err != nil {
 			log.Fatalf("Cannot register command %v\n", command.Name)
 		}
 	}
-
-	defer s.Close()
+	
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	<-c
+
+	log.Println("Removing commands...")
+	registeredCommands, err := s.ApplicationCommands(s.State.User.ID, guildID)
+	if err != nil {
+		log.Fatalf("Could not fetch registered commands: %v", err)
+	}
+
+	for _, v := range registeredCommands {
+		err := s.ApplicationCommandDelete(s.State.User.ID, guildID, v.ID)
+		if err != nil {
+			log.Panicf("Cannot delete '%v' command: %v", v.Name, err)
+		}
+	}
 }
 
 func respond(s *discordgo.Session, i *discordgo.InteractionCreate, msg string, flags discordgo.MessageFlags) {

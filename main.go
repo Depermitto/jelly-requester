@@ -4,7 +4,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/Depermitto/jelly-requester/bot"
+	"github.com/Depermitto/wnioskodawca-galaretki/bot"
+	"github.com/joho/godotenv"
 	bolt "go.etcd.io/bbolt"
 )
 
@@ -29,6 +30,7 @@ func main() {
 		log.Fatalln("Internal server error")
 	}
 
+	_ = godotenv.Load()
 	token := os.Getenv(token)
 	if len(token) == 0 {
 		log.Fatalln("No discord bot token supplied")

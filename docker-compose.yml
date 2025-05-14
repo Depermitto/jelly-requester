@@ -1,8 +1,8 @@
 services:
-  jelly-requester:
+  wnioskodawca-galaretki:
     build: .
-    container_name: jelly-requester
-    image: jelly-requester:0.1.1
+    container_name: wnioskodawca-galaretki
+    image: wnioskodawca-galaretki:0.1.1
     volumes:
       - ./data:/app/data
     env_file: .env
